@@ -102,9 +102,21 @@ public class PlayerController : MonoBehaviour
   }
 
   // Interaction with a stain (requires cleaning).
-  void HandleStainInteraction()
+  void HandleStainInteraction(GameObject obj)
   {
-
+    switch (obj.GetComponent<Stain>().GetStainType())
+    {
+      case StainType.Regular:
+        {
+          Debug.Log("REGU");
+          break;
+        }
+      case StainType.Water:
+        {
+          Debug.Log("Water");
+          break;
+        }
+    }
   }
 
   ///////////////
@@ -132,6 +144,9 @@ public class PlayerController : MonoBehaviour
 
   public void OnInteract(InputAction.CallbackContext context)
   {
+    if (context.canceled || context.performed)
+      return;
+
     RaycastHit hitInfo;
     Ray ray = new Ray(m_CameraTransform.position, m_CameraTransform.forward * m_InteractionDistance);
     Physics.Raycast(ray, out hitInfo);
@@ -141,7 +156,7 @@ public class PlayerController : MonoBehaviour
     {
       case 6: // Stain
         {
-          Debug.Log("Stain");
+          HandleStainInteraction(hitInfo.collider.gameObject);
           break;
         }
       case 7: // Door
