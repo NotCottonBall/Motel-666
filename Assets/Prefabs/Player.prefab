@@ -150,7 +150,7 @@ GameObject:
   - component: {fileID: 301305920708466402}
   - component: {fileID: 5277555466158425168}
   m_Layer: 3
-  m_Name: Spot Light
+  m_Name: Flashlight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -178,14 +178,14 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6066656957775200420}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 13
   m_Type: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 1
   m_Range: 20
-  m_SpotAngle: 40
-  m_InnerSpotAngle: 30
+  m_SpotAngle: 65.32349
+  m_InnerSpotAngle: 52.188255
   m_CookieSize2D: {x: 0.5, y: 0.5}
   m_Shadows:
     m_Type: 0
@@ -431,7 +431,19 @@ MonoBehaviour:
     m_ActionId: eb469c89-65a2-4297-987c-ff15483b6660
     m_ActionName: 'Player/Look[/Mouse/delta]'
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4648284393714007147}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnInteract
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: c226a3bc-d12d-4cbf-a2fb-02cf9bae0ddd
     m_ActionName: 'Player/Interact[/Keyboard/e]'
   - m_PersistentCalls:
@@ -508,6 +520,7 @@ MonoBehaviour:
   m_HeadbobAmplitude: 0.15
   m_HeadbobFrequency: 10
   m_HeadbobIntensity: 10
+  m_InteractionDistance: 3
 --- !u!114 &1581854528333988257
 MonoBehaviour:
   m_ObjectHideFlags: 0

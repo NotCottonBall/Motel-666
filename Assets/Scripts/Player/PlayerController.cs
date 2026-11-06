@@ -1,3 +1,4 @@
+using Unity.VectorGraphics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,21 +8,25 @@ public class PlayerController : MonoBehaviour
   [SerializeField] private InputActionReference m_MoveAction;
 
   [Header("Player Properties")]
-  private bool m_PauseGame = false;
-  private Vector2 m_MouseMovement;
-  private Vector3 m_PlayerVelocity;
-  private float m_Pitch = -90f;
   [SerializeField] private Transform m_CameraTransform;
   [SerializeField] private CharacterController m_Controller;
   [SerializeField] private float m_PlayerSpeed;
   [SerializeField] private float m_PlayerGravity;
   [SerializeField] private float m_MouseSensitivity;
-  //Headbob stuff
-  private Vector3 m_CamOriginalPos;
-  private float m_Timer = 0f;
+  private bool m_PauseGame = false;
+  private Vector2 m_MouseMovement;
+  private Vector3 m_PlayerVelocity;
+  private float m_Pitch = -90f;
+
+  [Header("Headbob Settings")]
   [SerializeField] private float m_HeadbobAmplitude;
   [SerializeField] private float m_HeadbobFrequency;
   [SerializeField] private float m_HeadbobIntensity;
+  private Vector3 m_CamOriginalPos;
+  private float m_Timer = 0f;
+
+  [Header("Interaction Settings")]
+  [SerializeField] private float m_InteractionDistance;
 
   void Start()
   {
@@ -51,9 +56,13 @@ public class PlayerController : MonoBehaviour
       HandlePlayerMovement();
       HandleCameraMovement();
     }
+
+    Debug.DrawRay(m_CameraTransform.position, m_CameraTransform.forward * m_InteractionDistance, Color.pink);
   }
 
-  // Functions
+  ///////////////
+  // FUNCTIONS //
+  ///////////////
   void HandlePlayerMovement()
   {
     Vector2 input = m_MoveAction.action.ReadValue<Vector2>();
@@ -92,7 +101,15 @@ public class PlayerController : MonoBehaviour
     );
   }
 
-  // Callbacks
+  // Interaction with a stain (requires cleaning).
+  void HandleStainInteraction()
+  {
+
+  }
+
+  ///////////////
+  // CALLBACKS //
+  ///////////////
   public void OnMouseMove(InputAction.CallbackContext context)
   {
     m_MouseMovement = context.action.ReadValue<Vector2>();
@@ -110,6 +127,33 @@ public class PlayerController : MonoBehaviour
     {
       Cursor.lockState = CursorLockMode.Locked;
       Cursor.visible = false;
+    }
+  }
+
+  public void OnInteract(InputAction.CallbackContext context)
+  {
+    RaycastHit hitInfo;
+    Ray ray = new Ray(m_CameraTransform.position, m_CameraTransform.forward * m_InteractionDistance);
+    Physics.Raycast(ray, out hitInfo);
+    if (hitInfo.collider == null) return;
+
+    switch (hitInfo.collider.gameObject.layer)
+    {
+      case 6: // Stain
+        {
+          Debug.Log("Stain");
+          break;
+        }
+      case 7: // Door
+        {
+          Debug.Log("Door");
+          break;
+        }
+      case 8: // Pickup
+        {
+          Debug.Log("Pickup");
+          break;
+        }
     }
   }
 }
