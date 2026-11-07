@@ -4,6 +4,8 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+  public static PlayerController Instance;
+
   [Header("Input Actions")]
   [SerializeField] private InputActionReference m_MoveAction;
 
@@ -13,6 +15,7 @@ public class PlayerController : MonoBehaviour
   [SerializeField] private float m_PlayerSpeed;
   [SerializeField] private float m_PlayerGravity;
   [SerializeField] private float m_MouseSensitivity;
+  private bool m_EnablePlayerMovement = true;
   private bool m_PauseGame = false;
   private Vector2 m_MouseMovement;
   private Vector3 m_PlayerVelocity;
@@ -27,6 +30,11 @@ public class PlayerController : MonoBehaviour
 
   [Header("Interaction Settings")]
   [SerializeField] private float m_InteractionDistance;
+
+  void Awake()
+  {
+    Instance = this;
+  }
 
   void Start()
   {
@@ -51,7 +59,7 @@ public class PlayerController : MonoBehaviour
     if (!m_Controller.isGrounded)
       m_PlayerVelocity.y = 0f;
 
-    if (!m_PauseGame)
+    if (m_EnablePlayerMovement && !m_PauseGame)
     {
       HandlePlayerMovement();
       HandleCameraMovement();
@@ -113,10 +121,24 @@ public class PlayerController : MonoBehaviour
         }
       case StainType.Water:
         {
-          Debug.Log("Water");
+          QTEManager.Instance.QTERunKeyMashing(5f, 4, success =>
+          {
+            if (success)
+              Debug.Log("Pass");
+            else
+              Debug.Log("Fail");
+          });
           break;
         }
     }
+  }
+
+  /////////////
+  // METHODS //
+  /////////////
+  public void TogglePlayerMovement(bool value)
+  {
+    m_EnablePlayerMovement = value;
   }
 
   ///////////////
