@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
   private bool m_PauseGame = false;
   private Vector2 m_MouseMovement;
   private Vector3 m_PlayerVelocity;
-  private float m_Pitch = -90f;
+  private float m_Pitch = 0f;
 
   [Header("Headbob Settings")]
   [SerializeField] private float m_HeadbobAmplitude;
@@ -27,6 +27,10 @@ public class PlayerController : MonoBehaviour
   [SerializeField] private float m_HeadbobIntensity;
   private Vector3 m_CamOriginalPos;
   private float m_Timer = 0f;
+
+  [Header("Cleaning Settings")]
+  [SerializeField] private float m_MinSwipeCleanDistanceRequired;
+  [SerializeField] private float m_MaxSwipeCleanDistanceRequired;
 
   [Header("Interaction Settings")]
   [SerializeField] private float m_InteractionDistance;
@@ -42,6 +46,8 @@ public class PlayerController : MonoBehaviour
 
     Cursor.lockState = CursorLockMode.Locked;
     Cursor.visible = false;
+
+    SwipeManager.Instance.SetMainCamera(GetComponentInChildren<Camera>());
   }
 
   private void OnEnable()
@@ -86,6 +92,7 @@ public class PlayerController : MonoBehaviour
     m_Controller.Move(finalMove * Time.deltaTime);
   }
 
+  // @FIX_ME: Camera shifts to upward angle when you move the mouse for the first time.
   void HandleCameraMovement()
   {
     transform.Rotate(transform.up, m_MouseMovement.x * m_MouseSensitivity * Time.deltaTime);
@@ -116,7 +123,16 @@ public class PlayerController : MonoBehaviour
     {
       case StainType.Regular:
         {
-          Debug.Log("REGU");
+          float reqDistance = UnityEngine.Random.Range(
+            m_MinSwipeCleanDistanceRequired, m_MaxSwipeCleanDistanceRequired);
+          SwipeManager.Instance.SetRequiredDistanceToClean(reqDistance);
+          SwipeManager.Instance.StartSwiping(obj, success =>
+          {
+            if (success)
+              Debug.Log("Success");
+            else
+              Debug.Log("Fail");
+          });
           break;
         }
       case StainType.Water:
@@ -139,6 +155,14 @@ public class PlayerController : MonoBehaviour
   public void TogglePlayerMovement(bool value)
   {
     m_EnablePlayerMovement = value;
+  }
+
+  ///////////////
+  // Set Get s //
+  ///////////////
+  public bool IsPaused()
+  {
+    return m_PauseGame;
   }
 
   ///////////////
