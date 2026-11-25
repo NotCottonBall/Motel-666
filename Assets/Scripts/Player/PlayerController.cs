@@ -149,6 +149,32 @@ public class PlayerController : MonoBehaviour
     }
   }
 
+  void HandleInteractableInteraction(GameObject obj)
+  {
+    InteractableType type = obj.GetComponent<Interactable>().GetInteractableType();
+    switch (type)
+    {
+      case InteractableType.Coin:
+        {
+          Destroy(obj);
+          Debug.Log("Coin");
+          break;
+        }
+      case InteractableType.Battery:
+        {
+          Destroy(obj);
+          Debug.Log("Battery");
+          break;
+        }
+      case InteractableType.Door:
+        {
+          Debug.Log("Door");
+          break;
+        }
+
+    }
+  }
+
   /////////////
   // METHODS //
   /////////////
@@ -205,14 +231,9 @@ public class PlayerController : MonoBehaviour
           HandleStainInteraction(hitInfo.collider.gameObject);
           break;
         }
-      case 7: // Door
+      case 8: // Interactable
         {
-          Debug.Log("Door");
-          break;
-        }
-      case 8: // Pickup
-        {
-          Debug.Log("Pickup");
+          HandleInteractableInteraction(hitInfo.collider.gameObject);
           break;
         }
     }
